@@ -22,20 +22,20 @@ The application must create a randomly generated password that meets certein cri
 
 Things added:
 
-    ~~1.~~
+    ~~1. Working on it.~~
 
 
-~~Link to deployed app:
-    [HTTPS](https://kmre.github.io/challenge3_pass_generator/)
+~~Link to deployed app:~~
+    ~~[HTTPS](https://kmre.github.io/challenge3_pass_generator/)~~
 
-Link to repository:
-    [HTTPS](https://github.com/kmre/challenge3_pass_generator.git)
+~~Link to repository:~~
+    ~~[HTTPS](https://github.com/kmre/challenge3_pass_generator.git)~~
 
-    [SSH](git@github.com:kmre/challenge3_pass_generator.git)
+    ~~[SSH](git@github.com:kmre/challenge3_pass_generator.git)~~
 
-    [GitHub CLI](gh repo clone kmre/challenge3_pass_generator)
+    ~~[GitHub CLI](gh repo clone kmre/challenge3_pass_generator)~~
     
-Screenshot:
-    ![WebPage Screenshot](./assets/images/screencapture.png?raw=true "Screenshot")~~
+~~Screenshot:~~
+    ~~![WebPage Screenshot](./assets/images/screencapture.png?raw=true "Screenshot")~~
 
 
