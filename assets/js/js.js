@@ -21,6 +21,8 @@ var selectedButton = function(clicked_id, clicked_txt) {
           console.log(myQuestions[index].correctAnswer);
           var deleteContainer = document.getElementById("div-question" + index);
           deleteContainer.remove();
+          index++;
+          
 
           
       } else {
