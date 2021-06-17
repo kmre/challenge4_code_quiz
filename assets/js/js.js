@@ -1,15 +1,59 @@
+//Add timer to display if selection is in/correct and delay the deletion/appearance of next set of question/answers
+
+
+
+//Add timer for total game (with deduction for incorrect answers)
+
+
+
+//Display if selected answer is correct or incorrect and display progress
+var displaySelectionResult = function(display) {
+  debugger;
+  if (index < myQuestions.length) {
+    if (display == 1) {
+      // displays and adds correct answers
+      console.log("Correct Answer!");
+      console.count("totalCorrect");
+      totalCorrect++;
+      console.log("Correct Answer! " + totalCorrect);
+    }
+    else if (display == 2) {
+      // displays and adds incorrect answers
+      console.log("XX Incorrect");
+      console.count("totalIncorrect");
+      totalIncorrect++;
+      console.log("XX Incorrect " + totalIncorrect);
+    }
+} 
+
+else {
+  //displays total at end and reset all counters
+
+  console.countReset("totalCorrect"); 
+  console.countReset("totalIncorrect");
+  totalCorrect = 0;
+  totalIncorrect = 0;
+}
+}
+
+
+
 
 //selected button passes the information to the fn and it checks if it's correct or not
+//also deleted the previous questions so the next set can be displayed
 var selectedButton = function(clicked_id, clicked_txt) { 
-  debugger;
+  //debugger;
   //index = currentIndex;
   console.log("Button clicked, id "+clicked_id+", text: " +clicked_txt);
   if (index < myQuestions.length) {
       
-      console.log(index);
+      console.log("index for selected button main if: " + index);
 
       if (clicked_id === myQuestions[index].correctAnswer) {
           console.log("Correct");
+          console.log("index for selectedButton: " + index);
+          display = 1;
+          displaySelectionResult(display);
           var deleteContainer = document.getElementById("div-question" + index);
           deleteContainer.remove();
           index++;
@@ -17,27 +61,26 @@ var selectedButton = function(clicked_id, clicked_txt) {
       }
       else if (clicked_id !== myQuestions[index].correctAnswer) {
           console.log("Incorrect");
-          console.log(index);
-          console.log(myQuestions[index].correctAnswer);
+          console.log("index for selectedButton: " + index);
+          console.log("Correct Answer: " + myQuestions[index].correctAnswer);
+          display = 2;
+          displaySelectionResult(display);
           var deleteContainer = document.getElementById("div-question" + index);
           deleteContainer.remove();
           index++;
-
-      } else {
-          var deleteContainer = document.getElementById("div-question" + index);
-          deleteContainer.remove();
-          index++;        
+          
       } 
   }
   makeQuiz(index);
 }
 
-//makes the quiz 
-function makeQuiz () {
-  var i = index;
+//makes the quiz adds containers for questions/answers depending on the index
+//function makeQuiz (i) {
+  var makeQuiz = function(i) {
+  //var i = index;
   if (i < myQuestions.length) {
       //Question container
-      debugger;
+      //debugger;
       var container = document.getElementById("question");
 
       var questionContainerCreate = document.createElement("div");
@@ -64,22 +107,29 @@ function makeQuiz () {
       textAppend = btnCreate.appendChild(btnText);
       container3.appendChild(btnCreate);  
       }
-      console.log(i);
-      console.log(index);
-      index = i;
-      return index;
+
+
+      //console.log(i);
+      console.log("index for makeQuiz: " + index);
+    
   }
   else if (i === myQuestions.length) {
-    debugger;
+    //after last question is answered go through this and re-create the start button
+    //if they click on the start button again it will re-start the quiz
     var startContainer = document.getElementById("welcome");
     var addStartBttn = document.createElement("BUTTON");
+    addStartBttn.setAttribute("type", "button");
     addStartBttn.setAttribute("id", "start");
+    addStartBttn.setAttribute("onclick", "startQuiz()");
     var startBttnTxt = document.createTextNode("Start");
     textAppend = addStartBttn.appendChild(startBttnTxt);
     startContainer.appendChild(addStartBttn);
-    index = 0;
-    document.getElementById("start").addEventListener("click", startQuiz);
-    return index;
+    //can now display totals
+    display = 0;
+    displaySelectionResult(display);
+    //re-start quiz
+    //document.getElementById("start").addEventListener("click", startQuiz);
+    
   }
 }
 
@@ -157,22 +207,27 @@ var myQuestions = [
   var submitButton = document.getElementById("submit");
   var start = document.getElementById("start");
   var index;
-  var currentIndex;
-
+  var display;
+  var totalCorrect;
+  var totalIncorrect;
+  
 //function to generate the first set of questions with answers on buttons
- 
- var startQuiz = function() {
-//start.onclick = function(){
+//also deletes the start button so it can't be used throughout the quiz
+var startQuiz = function() {
+  debugger;
+//set all variables to 0 before starting
   index = 0;
-  makeQuiz(index);
-  currentIndex = index;
+  display = 0;
+  totalCorrect = 0;
+  totalIncorrect = 0;
+
+  //delete start button
   var deleteStartBttn = document.getElementById("start");
-  console.log(deleteStartBttn);
   deleteStartBttn.remove();
-  console.log(deleteStartBttn);
-  return currentIndex;
+
+  //go to make quiz with index
+  makeQuiz(index);
+  
 }
 
-document.getElementById("start").addEventListener("click", startQuiz);
-/// Need to make a button to "start again" and add the start button
-
+//document.getElementById("start").addEventListener("click", startQuiz);
