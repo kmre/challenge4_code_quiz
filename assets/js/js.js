@@ -5,10 +5,38 @@ function sleep(ms) {
 
 //Add timer for total game (with deduction for incorrect answers)
 var gameTimer = function() {
+debugger;
+
+var timeleft = 50;
+var mainTimer = setInterval( function() {
+  if(timeleft <= 0){
+    clearInterval(mainTimer);
+    document.getElementById("timer").innerHTML = "Finished";
+  } else {
+    document.getElementById("timer").innerHTML = timeleft + " seconds remaining";
+  }
+  timeleft -= 1;
+}, 1000);
 
 
+
+// secondsInterval = setInterval(function(){ alertFunc(mainTime, time); }, 1000);
+// }
+
+// function alertFunc(param1, param2) {
+//   document.getElementById("timer").innerHTML += "Hello ";
+// 	if (param2 > param1) {
+//     clearInterval(secondsInterval);
+//     }
+//     else {
+//       param2 = param2 + 500;
+//     }
+    
+//   //document.getElementById("demo2").innerHTML = "Parameters passed to alertFunc(): <br>" 
+//   //+ param1 + "<br>" + param2 + "<br>";
 
 }
+
 
 var resetStart = function() {
 
@@ -223,6 +251,9 @@ var myQuestions = [
   var totalIncorrect;
   var timer = 500;
   var totalScore;
+  var myVar;
+  var mainTime = 5000;
+  var time = 500;
 
 //function to generate the first set of questions with answers on buttons
 //also deletes the start button so it can't be used throughout the quiz
@@ -241,6 +272,6 @@ var startQuiz = function() {
 
   //go to make quiz with index
   makeQuiz(index);
-  
+  gameTimer();
 }
 
