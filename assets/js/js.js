@@ -22,9 +22,7 @@ var selectedButton = function(clicked_id, clicked_txt) {
           var deleteContainer = document.getElementById("div-question" + index);
           deleteContainer.remove();
           index++;
-          
 
-          
       } else {
           var deleteContainer = document.getElementById("div-question" + index);
           deleteContainer.remove();
@@ -70,6 +68,18 @@ function makeQuiz () {
       console.log(index);
       index = i;
       return index;
+  }
+  else if (i === myQuestions.length) {
+    debugger;
+    var startContainer = document.getElementById("welcome");
+    var addStartBttn = document.createElement("BUTTON");
+    addStartBttn.setAttribute("id", "start");
+    var startBttnTxt = document.createTextNode("Start");
+    textAppend = addStartBttn.appendChild(startBttnTxt);
+    startContainer.appendChild(addStartBttn);
+    index = 0;
+    document.getElementById("start").addEventListener("click", startQuiz);
+    return index;
   }
 }
 
@@ -149,9 +159,10 @@ var myQuestions = [
   var index;
   var currentIndex;
 
-  //function to generate the first set of questions with answers on buttons
-
-start.onclick = function(){
+//function to generate the first set of questions with answers on buttons
+ 
+ var startQuiz = function() {
+//start.onclick = function(){
   index = 0;
   makeQuiz(index);
   currentIndex = index;
@@ -162,5 +173,6 @@ start.onclick = function(){
   return currentIndex;
 }
 
+document.getElementById("start").addEventListener("click", startQuiz);
 /// Need to make a button to "start again" and add the start button
 
