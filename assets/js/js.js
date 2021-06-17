@@ -90,10 +90,11 @@ var selectedButton = function(clicked_id, clicked_txt) {
       questionContainerCreate.innerHTML = currentQuestion; 
 
       //Choices container
-      var container2 = document.getElementById("div-question" + i); 
+      //var container2 = document.getElementById("div-question" + i); 
+      //append container to id = question instead
       var choicesContainerCreate = document.createElement("div");
       choicesContainer = choicesContainerCreate.setAttribute("id", "div-choices" + i);
-      container2.appendChild(choicesContainerCreate);
+      container.appendChild(choicesContainerCreate);
 
       var container3 = document.getElementById("div-choices" + i); 
       
@@ -128,8 +129,9 @@ var selectedButton = function(clicked_id, clicked_txt) {
     //can now display totals
     display = 0;
     displaySelectionResult(display);
+    //resets footer
     document.getElementById("progress").innerHTML = "";
-      document.getElementById("progress").innerHTML = "Let's get Started!";
+    document.getElementById("progress").innerHTML = "Let's get Started!";
     
   }
 }
