@@ -21,8 +21,7 @@ var resetStart = function() {
   var startBttnTxt = document.createTextNode("Start");
   textAppend = addStartBttn.appendChild(startBttnTxt);
   startContainer.appendChild(addStartBttn);
-  //can now display totals
-
+  
   //resets footer
   document.getElementById("progress").innerHTML = "";
   document.getElementById("progress").innerHTML = "Let's get Started!";
@@ -34,38 +33,23 @@ var resetStart = function() {
 var displaySelectionResult = async function(display) {
   //debugger;
   if (index < myQuestions.length) {
-
     document.getElementById("results").innerHTML = "";
     
     if (display == 1) {
-      // displays and adds correct answers
-      console.log("Correct Answer!");
-      console.count("totalCorrect");
       document.getElementById("results").innerHTML = "Correct!";
 
       totalCorrect++;
-      console.log("Correct Answer! " + totalCorrect);
-
     }
     else if (display == 2) {
-      // displays and adds incorrect answers
-      console.log("XX Incorrect");
-      console.count("totalIncorrect");
-      
       document.getElementById("results").innerHTML = "Nope!";
       totalIncorrect++;
-      console.log("XX Incorrect " + totalIncorrect);
     }
   }
 else {
-  console.countReset("totalCorrect"); 
   //fn to ask for user initials and save score
   totalScore = Math.round((totalCorrect/myQuestions.length) * 100);
-
   document.getElementById("results").innerHTML = "Result: " + totalCorrect + "/" + myQuestions.length + "<br><br>" + totalScore + " %";
 
-  console.countReset("totalIncorrect");
-  console.log(totalScore);
   totalCorrect = 0;
   totalIncorrect = 0;
 }
@@ -76,15 +60,11 @@ else {
 //also deleted the previous questions so the next set can be displayed
 var selectedButton = async function(clicked_id, clicked_txt) { 
   //debugger;
-  //index = currentIndex;
-  console.log("Button clicked, id "+clicked_id+", text: " +clicked_txt);
   if (index < myQuestions.length) {
       
-      console.log("index for selected button main if: " + index);
+      //console.log("index for selected button main if: " + index);
 
       if (clicked_id === myQuestions[index].correctAnswer) {
-          console.log("Correct");
-          console.log("index for selectedButton: " + index);
           display = 1;
           displaySelectionResult(display);
           var deleteContainerQ = document.getElementById("div-question" + index);
@@ -98,9 +78,6 @@ var selectedButton = async function(clicked_id, clicked_txt) {
           
       }
       else if (clicked_id !== myQuestions[index].correctAnswer) {
-          console.log("Incorrect");
-          console.log("index for selectedButton: " + index);
-          console.log("Correct Answer: " + myQuestions[index].correctAnswer);
           display = 2;
           displaySelectionResult(display);
           var deleteContainerQ = document.getElementById("div-question" + index);
@@ -120,7 +97,6 @@ var selectedButton = async function(clicked_id, clicked_txt) {
 //makes the quiz adds containers for questions/answers depending on the index
 //function makeQuiz (i) {
   var makeQuiz = async function(i) {
-  //var i = index;
   if (i < myQuestions.length) {
       //Question container
       //debugger;
@@ -154,7 +130,7 @@ var selectedButton = async function(clicked_id, clicked_txt) {
       var x = i + 1;
       document.getElementById("progress").innerHTML = "";
       document.getElementById("progress").innerHTML = "Question " + x + " of " + myQuestions.length;
-      console.log("index for makeQuiz: " + index);
+      //console.log("index for makeQuiz: " + index);
     
   }
   else if (i === myQuestions.length) {
@@ -167,7 +143,7 @@ var selectedButton = async function(clicked_id, clicked_txt) {
     document.getElementById("results").innerHTML = "";
 
     //enter your initials for High Score
-
+    
     //adds the start button
     resetStart();
   }
