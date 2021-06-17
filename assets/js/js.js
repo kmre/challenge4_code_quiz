@@ -107,9 +107,10 @@ var selectedButton = function(clicked_id, clicked_txt) {
       textAppend = btnCreate.appendChild(btnText);
       container3.appendChild(btnCreate);  
       }
+      var x = i + 1;
+      document.getElementById("progress").innerHTML = "";
+      document.getElementById("progress").innerHTML = "Question " + x + " of " + myQuestions.length;
 
-
-      //console.log(i);
       console.log("index for makeQuiz: " + index);
     
   }
@@ -127,8 +128,8 @@ var selectedButton = function(clicked_id, clicked_txt) {
     //can now display totals
     display = 0;
     displaySelectionResult(display);
-    //re-start quiz
-    //document.getElementById("start").addEventListener("click", startQuiz);
+    document.getElementById("progress").innerHTML = "";
+      document.getElementById("progress").innerHTML = "Let's get Started!";
     
   }
 }
@@ -201,16 +202,11 @@ var myQuestions = [
 ];
 
 //variables
-  var mainContainer = document.getElementById("main");
-  var quizContainer = document.getElementById("quiz");
-  var resultsContainer = document.getElementById("results");
-  var submitButton = document.getElementById("submit");
-  var start = document.getElementById("start");
   var index;
   var display;
   var totalCorrect;
   var totalIncorrect;
-  
+
 //function to generate the first set of questions with answers on buttons
 //also deletes the start button so it can't be used throughout the quiz
 var startQuiz = function() {
@@ -230,4 +226,3 @@ var startQuiz = function() {
   
 }
 
-//document.getElementById("start").addEventListener("click", startQuiz);
