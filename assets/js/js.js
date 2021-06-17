@@ -10,10 +10,16 @@
 var displaySelectionResult = function(display) {
   debugger;
   if (index < myQuestions.length) {
+
+    document.getElementById("results").innerHTML = "";
+    
     if (display == 1) {
       // displays and adds correct answers
       console.log("Correct Answer!");
       console.count("totalCorrect");
+      document.getElementById("results").innerHTML = "Correct!";
+      //timer here
+      document.getElementById("results").innerHTML = "";
       totalCorrect++;
       console.log("Correct Answer! " + totalCorrect);
     }
@@ -21,6 +27,9 @@ var displaySelectionResult = function(display) {
       // displays and adds incorrect answers
       console.log("XX Incorrect");
       console.count("totalIncorrect");
+      document.getElementById("results").innerHTML = "Nope!";
+      //timer here
+      document.getElementById("results").innerHTML = "";
       totalIncorrect++;
       console.log("XX Incorrect " + totalIncorrect);
     }
@@ -28,7 +37,10 @@ var displaySelectionResult = function(display) {
 
 else {
   //displays total at end and reset all counters
-
+  //add enter information button
+  document.getElementById("results").innerHTML = totalCorrect + " / " + totalIncorrect;
+  //timer here
+  document.getElementById("results").innerHTML = "";
   console.countReset("totalCorrect"); 
   console.countReset("totalIncorrect");
   totalCorrect = 0;
@@ -54,8 +66,10 @@ var selectedButton = function(clicked_id, clicked_txt) {
           console.log("index for selectedButton: " + index);
           display = 1;
           displaySelectionResult(display);
-          var deleteContainer = document.getElementById("div-question" + index);
-          deleteContainer.remove();
+          var deleteContainerQ = document.getElementById("div-question" + index);
+          deleteContainerQ.remove();
+          var deleteContainerC = document.getElementById("div-choices" + index);
+          deleteContainerC.remove();
           index++;
           
       }
@@ -65,8 +79,10 @@ var selectedButton = function(clicked_id, clicked_txt) {
           console.log("Correct Answer: " + myQuestions[index].correctAnswer);
           display = 2;
           displaySelectionResult(display);
-          var deleteContainer = document.getElementById("div-question" + index);
-          deleteContainer.remove();
+          var deleteContainerQ = document.getElementById("div-question" + index);
+          deleteContainerQ.remove();
+          var deleteContainerC = document.getElementById("div-choices" + index);
+          deleteContainerC.remove();
           index++;
           
       } 
@@ -117,6 +133,8 @@ var selectedButton = function(clicked_id, clicked_txt) {
   }
   else if (i === myQuestions.length) {
     //after last question is answered go through this and re-create the start button
+    display = 0;
+    displaySelectionResult(display);
     //if they click on the start button again it will re-start the quiz
     var startContainer = document.getElementById("welcome");
     var addStartBttn = document.createElement("BUTTON");
@@ -127,8 +145,7 @@ var selectedButton = function(clicked_id, clicked_txt) {
     textAppend = addStartBttn.appendChild(startBttnTxt);
     startContainer.appendChild(addStartBttn);
     //can now display totals
-    display = 0;
-    displaySelectionResult(display);
+
     //resets footer
     document.getElementById("progress").innerHTML = "";
     document.getElementById("progress").innerHTML = "Let's get Started!";
