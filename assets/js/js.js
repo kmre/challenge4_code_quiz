@@ -4,15 +4,33 @@ function sleep(ms) {
 }
 
 //Add timer for total game (with deduction for incorrect answers)
-
 var gameTimer = function() {
 
 
 
 }
 
+var resetStart = function() {
+
+  //if they click on the start button again it will re-start the quiz
+  var startContainer = document.getElementById("welcome");
+  var addStartBttn = document.createElement("BUTTON");
+  addStartBttn.setAttribute("type", "button");
+  addStartBttn.setAttribute("id", "start");
+  addStartBttn.setAttribute("onclick", "startQuiz()");
+  var startBttnTxt = document.createTextNode("Start");
+  textAppend = addStartBttn.appendChild(startBttnTxt);
+  startContainer.appendChild(addStartBttn);
+  //can now display totals
+
+  //resets footer
+  document.getElementById("progress").innerHTML = "";
+  document.getElementById("progress").innerHTML = "Let's get Started!";
+
+}
 
 //Display if selected answer is correct or incorrect and display progress
+//Also count the # of in/correct questions
 var displaySelectionResult = async function(display) {
   //debugger;
   if (index < myQuestions.length) {
@@ -40,9 +58,14 @@ var displaySelectionResult = async function(display) {
     }
   }
 else {
-  document.getElementById("results").innerHTML = totalCorrect + " / " + myQuestions.length;
   console.countReset("totalCorrect"); 
+  //fn to ask for user initials and save score
+  totalScore = Math.round((totalCorrect/myQuestions.length) * 100);
+
+  document.getElementById("results").innerHTML = "Result: " + totalCorrect + "/" + myQuestions.length + "<br><br>" + totalScore + " %";
+
   console.countReset("totalIncorrect");
+  console.log(totalScore);
   totalCorrect = 0;
   totalIncorrect = 0;
 }
@@ -68,7 +91,8 @@ var selectedButton = async function(clicked_id, clicked_txt) {
           deleteContainerQ.remove();
           var deleteContainerC = document.getElementById("div-choices" + index);
           deleteContainerC.remove();
-          await sleep(2000);
+          //wait two seconds to show the next set of questions
+          await sleep(timer);
           document.getElementById("results").innerHTML = "";
           index++;
           
@@ -83,7 +107,8 @@ var selectedButton = async function(clicked_id, clicked_txt) {
           deleteContainerQ.remove();
           var deleteContainerC = document.getElementById("div-choices" + index);
           deleteContainerC.remove();
-          await sleep(2000);
+          //wait two seconds to show the next set of questions
+          await sleep(timer);
           document.getElementById("results").innerHTML = "";
           index++;
           
@@ -137,23 +162,14 @@ var selectedButton = async function(clicked_id, clicked_txt) {
     document.getElementById("progress").innerHTML = "";
     display = 0;
     displaySelectionResult(display);
-    await sleep(2000);
+    //wait two seconds to add the start button
+    await sleep(timer+1000);
     document.getElementById("results").innerHTML = "";
-    //if they click on the start button again it will re-start the quiz
-    var startContainer = document.getElementById("welcome");
-    var addStartBttn = document.createElement("BUTTON");
-    addStartBttn.setAttribute("type", "button");
-    addStartBttn.setAttribute("id", "start");
-    addStartBttn.setAttribute("onclick", "startQuiz()");
-    var startBttnTxt = document.createTextNode("Start");
-    textAppend = addStartBttn.appendChild(startBttnTxt);
-    startContainer.appendChild(addStartBttn);
-    //can now display totals
 
-    //resets footer
-    document.getElementById("progress").innerHTML = "";
-    document.getElementById("progress").innerHTML = "Let's get Started!";
-    
+    //enter your initials for High Score
+
+    //adds the start button
+    resetStart();
   }
 }
 
@@ -229,7 +245,8 @@ var myQuestions = [
   var display;
   var totalCorrect;
   var totalIncorrect;
-  var timer;
+  var timer = 500;
+  var totalScore;
 
 //function to generate the first set of questions with answers on buttons
 //also deletes the start button so it can't be used throughout the quiz
@@ -240,6 +257,7 @@ var startQuiz = function() {
   display = 0;
   totalCorrect = 0;
   totalIncorrect = 0;
+  totalScore = 0;
 
   //delete start button
   var deleteStartBttn = document.getElementById("start");
