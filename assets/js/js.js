@@ -11,72 +11,41 @@ async function sleep(timer) {
   });
 
   timerComplete = await myPromise;
-  console.log(timerComplete);
+  //console.log(timerComplete);
 }
 
 //Add timer for total game (with deduction for incorrect answers)
 var gameTimer = function() {
   //debugger;
-
+  timeleft = 10;
+  document.getElementById("timer").innerHTML = "";
   var mainTimer = setInterval(async function() {
     //debugger;
-    if((timeleft > 0)) {
+    if((timeleft > 0) && (index !== myQuestions.length)) {
+      //timer keeps going until it reaches 0 or all questions are answered
       document.getElementById("timer").innerHTML = timeleft + " seconds remaining";
       timeleft -= 1;
-      console.log("1: " + timeleft);
+      //console.log("1: " + timeleft);
 
     } else if ((index === myQuestions.length)) {
+      //All questions answered before timer runs out
       clearInterval(mainTimer);
       document.getElementById("timer").innerHTML = "";
       document.getElementById("timer").innerHTML = "All Done!";
-      console.log("1: " + timeleft);
-      
+      await sleep(4000);
+      document.getElementById("timer").innerHTML = "";
+          
     } else if (timeleft === 0) {
+      //timer ran out
       clearInterval(mainTimer);
       document.getElementById("timer").innerHTML = "No more time left!";
-      await sleep(5000);
+      stopQuiz(index);
+
+      await sleep(4000);
       document.getElementById("timer").innerHTML = "";
-      console.log("2: " + timeleft);
+      //return timeleft;
     }
-    //console.log("3" + timeleft);
-
-    /*
-    else {
-      clearInterval(mainTimer);
-      timeleft = 15;
-      document.getElementById("timer").innerHTML = timeleft + " seconds remaining";
-    }
-    */
-
 }, 1000);
-
-// var mainTimer = setInterval( function() {
-//   if(timeleft <= 0 || index == myQuestions.length){
-//     clearInterval(mainTimer);
-//     document.getElementById("timer").innerHTML = "Finished";
-//   } else {
-//     document.getElementById("timer").innerHTML = timeleft + " seconds remaining";
-//   }
-//   timeleft -= 1;
-// }, 1000);
-
-
-
-// secondsInterval = setInterval(function(){ alertFunc(mainTime, time); }, 1000);
-// }
-
-// function alertFunc(param1, param2) {
-//   document.getElementById("timer").innerHTML += "Hello ";
-// 	if (param2 > param1) {
-//     clearInterval(secondsInterval);
-//     }
-//     else {
-//       param2 = param2 + 500;
-//     }
-    
-//   //document.getElementById("demo2").innerHTML = "Parameters passed to alertFunc(): <br>" 
-//   //+ param1 + "<br>" + param2 + "<br>";
-
 }
 
 
@@ -104,10 +73,8 @@ var displaySelectionResult = async function(display) {
   //debugger;
   if (index < myQuestions.length) {
     document.getElementById("results").innerHTML = "";
-    
     if (display == 1) {
       document.getElementById("results").innerHTML = "Correct!";
-
       totalCorrect++;
     }
     else if (display == 2) {
@@ -119,6 +86,7 @@ else {
   //fn to ask for user initials and save score
   totalScore = Math.round((totalCorrect/myQuestions.length) * 100);
   document.getElementById("results").innerHTML = "Result: " + totalCorrect + "/" + myQuestions.length + "<br><br>" + totalScore + " %";
+  //Add fn for player input
 
   totalCorrect = 0;
   totalIncorrect = 0;
@@ -135,12 +103,10 @@ var selectedButton = async function(clicked_id, clicked_txt) {
       //console.log("index for selected button main if: " + index);
 
       if (clicked_id === myQuestions[index].correctAnswer) {
+          //correct answer
           display = 1;
           displaySelectionResult(display);
-          var deleteContainerQ = document.getElementById("div-question" + index);
-          deleteContainerQ.remove();
-          var deleteContainerC = document.getElementById("div-choices" + index);
-          deleteContainerC.remove();
+          deleteContainers(index);
           //wait two seconds to show the next set of questions
           await sleep(timer);
           document.getElementById("results").innerHTML = "";
@@ -148,27 +114,54 @@ var selectedButton = async function(clicked_id, clicked_txt) {
           
       }
       else if (clicked_id !== myQuestions[index].correctAnswer) {
+          //incorrect answer
           display = 2;
           displaySelectionResult(display);
-          var deleteContainerQ = document.getElementById("div-question" + index);
-          deleteContainerQ.remove();
-          var deleteContainerC = document.getElementById("div-choices" + index);
-          deleteContainerC.remove();
+          deleteContainers(index);
           //wait two seconds to show the next set of questions
           await sleep(timer);
           document.getElementById("results").innerHTML = "";
           index++;
-          
       } 
   }
   makeQuiz(index);
 }
 
+
+ var stopQuiz = function(i) {
+   debugger;
+    stop = true;
+    deleteContainers(i);
+    makeQuiz("null", stop);
+ }
+
+
 //makes the quiz adds containers for questions/answers depending on the index
 //function makeQuiz (i) {
-  var makeQuiz = async function(i) {
+  var makeQuiz = async function(i, stop) {
   if (i < myQuestions.length) {
-      //Question container
+    
+    makeContainers(i);
+      
+  }
+  else if ((i === myQuestions.length) || (stop)) {
+    //after last question is answered go through this and re-create the start button
+    document.getElementById("progress").innerHTML = "";
+    display = 0;
+    displaySelectionResult(display);
+    //wait two seconds to add the start button
+    await sleep(mainTime);
+    document.getElementById("results").innerHTML = "";
+
+    //enter your initials for High Score
+    
+    //adds the start button
+    resetStart();
+  }
+}
+
+var makeContainers = function(i) {
+//Question container
       //debugger;
       var container = document.getElementById("question");
 
@@ -201,22 +194,14 @@ var selectedButton = async function(clicked_id, clicked_txt) {
       document.getElementById("progress").innerHTML = "";
       document.getElementById("progress").innerHTML = "Question " + x + " of " + myQuestions.length;
       //console.log("index for makeQuiz: " + index);
-    
-  }
-  else if (i === myQuestions.length) {
-    //after last question is answered go through this and re-create the start button
-    document.getElementById("progress").innerHTML = "";
-    display = 0;
-    displaySelectionResult(display);
-    //wait two seconds to add the start button
-    await sleep(mainTime);
-    document.getElementById("results").innerHTML = "";
 
-    //enter your initials for High Score
-    
-    //adds the start button
-    resetStart();
-  }
+}
+
+var deleteContainers = function(index) {
+  var deleteContainerQ = document.getElementById("div-question" + index);
+  deleteContainerQ.remove();
+  var deleteContainerC = document.getElementById("div-choices" + index);
+  deleteContainerC.remove();
 }
 
 //object for questions and answers
@@ -294,10 +279,11 @@ var myQuestions = [
   var timer = 500;
   var totalScore;
   var timerComplete;
-  var mainTime = 5000;
+  var mainTime = 1000;
   var time = 500;
-  var timeleft;
   var myPromise;
+  var timeleft;
+  var stop;
 
 
 
@@ -311,13 +297,12 @@ var startQuiz = function() {
   totalCorrect = 0;
   totalIncorrect = 0;
   totalScore = 0;
-  timeleft = 15;
 
   //delete start button
   var deleteStartBttn = document.getElementById("start");
   deleteStartBttn.remove();
   //start timer
-  gameTimer();
+
   //go to make quiz with index
   makeQuiz(index);
 
