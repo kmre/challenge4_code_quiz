@@ -1,22 +1,64 @@
 //Add timer to display if selection is in/correct and delay the deletion/appearance of next set of question/answers
+/*
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
+}
+*/
+
+async function sleep(timer) {
+  myPromise = new Promise(function(myResolve, myReject) {
+    setTimeout(function() { myResolve(timer); }, timer);
+  });
+
+  timerComplete = await myPromise;
+  console.log(timerComplete);
 }
 
 //Add timer for total game (with deduction for incorrect answers)
 var gameTimer = function() {
-debugger;
+  //debugger;
 
-var timeleft = 50;
-var mainTimer = setInterval( function() {
-  if(timeleft <= 0){
-    clearInterval(mainTimer);
-    document.getElementById("timer").innerHTML = "Finished";
-  } else {
-    document.getElementById("timer").innerHTML = timeleft + " seconds remaining";
-  }
-  timeleft -= 1;
+  var mainTimer = setInterval(async function() {
+    //debugger;
+    if((timeleft > 0)) {
+      document.getElementById("timer").innerHTML = timeleft + " seconds remaining";
+      timeleft -= 1;
+      console.log("1: " + timeleft);
+
+    } else if ((index === myQuestions.length)) {
+      clearInterval(mainTimer);
+      document.getElementById("timer").innerHTML = "";
+      document.getElementById("timer").innerHTML = "All Done!";
+      console.log("1: " + timeleft);
+      
+    } else if (timeleft === 0) {
+      clearInterval(mainTimer);
+      document.getElementById("timer").innerHTML = "No more time left!";
+      await sleep(5000);
+      document.getElementById("timer").innerHTML = "";
+      console.log("2: " + timeleft);
+    }
+    //console.log("3" + timeleft);
+
+    /*
+    else {
+      clearInterval(mainTimer);
+      timeleft = 15;
+      document.getElementById("timer").innerHTML = timeleft + " seconds remaining";
+    }
+    */
+
 }, 1000);
+
+// var mainTimer = setInterval( function() {
+//   if(timeleft <= 0 || index == myQuestions.length){
+//     clearInterval(mainTimer);
+//     document.getElementById("timer").innerHTML = "Finished";
+//   } else {
+//     document.getElementById("timer").innerHTML = timeleft + " seconds remaining";
+//   }
+//   timeleft -= 1;
+// }, 1000);
 
 
 
@@ -45,7 +87,7 @@ var resetStart = function() {
   var addStartBttn = document.createElement("BUTTON");
   addStartBttn.setAttribute("type", "button");
   addStartBttn.setAttribute("id", "start");
-  addStartBttn.setAttribute("onclick", "startQuiz()");
+  addStartBttn.setAttribute("onclick", "startQuiz(), gameTimer()");
   var startBttnTxt = document.createTextNode("Start");
   textAppend = addStartBttn.appendChild(startBttnTxt);
   startContainer.appendChild(addStartBttn);
@@ -167,7 +209,7 @@ var selectedButton = async function(clicked_id, clicked_txt) {
     display = 0;
     displaySelectionResult(display);
     //wait two seconds to add the start button
-    await sleep(timer+1000);
+    await sleep(mainTime);
     document.getElementById("results").innerHTML = "";
 
     //enter your initials for High Score
@@ -251,9 +293,13 @@ var myQuestions = [
   var totalIncorrect;
   var timer = 500;
   var totalScore;
-  var myVar;
+  var timerComplete;
   var mainTime = 5000;
   var time = 500;
+  var timeleft;
+  var myPromise;
+
+
 
 //function to generate the first set of questions with answers on buttons
 //also deletes the start button so it can't be used throughout the quiz
@@ -265,13 +311,15 @@ var startQuiz = function() {
   totalCorrect = 0;
   totalIncorrect = 0;
   totalScore = 0;
+  timeleft = 15;
 
   //delete start button
   var deleteStartBttn = document.getElementById("start");
   deleteStartBttn.remove();
-
+  //start timer
+  gameTimer();
   //go to make quiz with index
   makeQuiz(index);
-  gameTimer();
+
 }
 
