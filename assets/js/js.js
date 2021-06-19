@@ -17,7 +17,7 @@ async function sleep(timer) {
 //Add timer for total game (with deduction for incorrect answers)
 var gameTimer = function() {
   //debugger;
-  timeleft = 75;
+  timeleft = 15;
   document.getElementById("timer").innerHTML = "";
   var mainTimer = setInterval(async function() {
     //debugger;
@@ -69,29 +69,60 @@ var resetStart = function() {
 
 var storeScores = function(score) {
   debugger;
+  //max number of entries for HS
   var maxNumber = 2;
+  //key
   var high_Scores = "highScores";
-
+  //Get stored information and parse it if nothing create empty array
   var highScores = JSON.parse(localStorage.getItem(high_Scores)) ?? [];
+  //calculates lowest score in highScores array, if null then 0
   var lowestScore = highScores[maxNumber - 1]?.score ?? 0;
   
   if (score > lowestScore) {
     var userName = prompt("You got a high score!\r\nPlease enter your name to be added to the top scores list! ");
+      if (userName == "" || userName == NaN) {
+        window.alert("Error This field can not be left blank.");
+        userName = prompt("You got a high score!\r\nPlease enter your name to be added to the top scores list! ");
+      }
+    
     var newScore = {score, userName};
-
+    //pushes new score to the array
     highScores.push(newScore);
-    //highScores.sort((a, b) => {b.score - a.score});
+    //orders array in descending order
     highScores.sort(function(a, b){return b.score - a.score});
     console.log(highScores);
+    //cuts out the entries that go over the maxNumber of entries
     highScores.splice(maxNumber);
+    //stores information as string
     localStorage.setItem(high_Scores, JSON.stringify(highScores));
 
     //var highScoreList = document.getElementById(highScores);
     //highScoreList.innerHTML = highScores;
+ 
+     var retrieveHighScore = localStorage.getItem(high_Scores);
+     var highScoresArray = JSON.parse(retrieveHighScore);
+     var highScoresDisplay = [];
 
-    localStorage.getItem(high_Scores);
+      console.log(retrieveHighScore);
+
+
+      //var highScoresDisplay = Object.values(retrieveHighScore)
+      
+      //for (let y = 0; y < highScoresArray.length; y++) {
+      //  highScoresDisplay = array[y];
+     // }
+      
+     // highScoresArray.forEach(highScores => {
+        
+      //  highScoresDisplay = [highScores.userName, highScores.score];
+        
+     // });
+
+      console.log(highScoresDisplay);
+
+      document.getElementById("hs-h2").innerHTML = "HIGH SCORES!";
+      document.getElementById("highScores2").innerHTML = `${highScores.user}:${highScores.score}`
     
-     
       /*
       for (var j = 0; j < localStorage.length; j++) {
       x = localStorage.highScores[j];
@@ -121,7 +152,7 @@ var gameOver = function(totalCorrect, totalIncorrect){
 //Also count the # of in/correct questions
 var displaySelectionResult = async function(display) {
   //debugger;
-  if (index < myQuestions.length) {
+  if ((index < myQuestions.length) && (timeleft > 0)) {
     document.getElementById("results").innerHTML = "";
     if (display == 1) {
       document.getElementById("results").innerHTML = "Correct!";
@@ -131,21 +162,21 @@ var displaySelectionResult = async function(display) {
       document.getElementById("results").innerHTML = "Nope! -10 seconds";
       totalIncorrect++;
     }
+    else {
+      gameOver(totalCorrect, totalIncorrect);
+    }
   }
 else {
-
   gameOver(totalCorrect, totalIncorrect);
-
 }
 }
-
 
 //selected button passes the information to the fn and it checks if it's correct or not
 //also deleted the previous questions so the next set can be displayed
 var selectedButton = async function(clicked_id, clicked_txt) { 
   //debugger;
   if (index < myQuestions.length) {
-      
+
       if (clicked_id === myQuestions[index].correctAnswer) {
           //correct answer
           display = 1;
@@ -155,16 +186,15 @@ var selectedButton = async function(clicked_id, clicked_txt) {
           await sleep(timer);
           document.getElementById("results").innerHTML = "";
           index++;
-          
       }
       else if (clicked_id !== myQuestions[index].correctAnswer) {
           //incorrect answer
           display = 2;
           displaySelectionResult(display);
+          minusTime();
           deleteContainers(index);
           //wait timer to show the next set of questions
           await sleep(timer);
-          minusTime(true);
           document.getElementById("results").innerHTML = "";
           index++;
       } 
@@ -173,9 +203,12 @@ var selectedButton = async function(clicked_id, clicked_txt) {
 }
 
   var minusTime = function(wrong) {
-
     timeleft -= 10;
-
+    if (timeleft <= 0 ) {
+      stopQuiz(index);
+      clearInterval(mainTimer);
+      document.getElementById("timer").innerHTML = "No more time left!";
+    }
   }
 
  var stopQuiz = function(i) {
@@ -185,11 +218,10 @@ var selectedButton = async function(clicked_id, clicked_txt) {
     makeQuiz("null", stop);
  }
 
-
 //makes the quiz adds containers for questions/answers depending on the index
 //function makeQuiz (i) {
   var makeQuiz = async function(i, stop) {
-  if (i < myQuestions.length) {
+  if ((i < myQuestions.length) && (!stop)) {
     
     makeContainers(i);
       
@@ -202,7 +234,7 @@ var selectedButton = async function(clicked_id, clicked_txt) {
     //wait two seconds to add the start button
     await sleep(mainTime);
     document.getElementById("results").innerHTML = "";
-
+    
     //adds the start button
     resetStart();
   }
@@ -331,6 +363,7 @@ var myQuestions = [
   var myPromise;
   var timeleft;
   var stop;
+  var cancelSelected;
 
 
 
