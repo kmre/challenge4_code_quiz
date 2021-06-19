@@ -38,9 +38,12 @@ function gameTimer() {
           
     }   else if (timeleft <= 0) {
           //timer ran out
+          debugger;
           clearInterval(mainTimer);
           document.getElementById("timer").innerHTML = "No more time Left!";
-          stopQuiz(totalCorrect, totalIncorrect);
+          if (!stop_Quiz) {
+            stopQuiz(totalCorrect, totalIncorrect);
+          }
           //await sleep(mainTime);
           
         }
@@ -49,7 +52,6 @@ function gameTimer() {
 }
 
 function resetStart() {
-
   //reset result header
   document.getElementById("timer").innerHTML = "";
   document.getElementById("results").innerHTML = "";
@@ -65,8 +67,6 @@ function resetStart() {
   var startBttnTxt = document.createTextNode("Start!");
   textAppend = addStartBttn.appendChild(startBttnTxt);
   startContainer.appendChild(addStartBttn);
-  
-
   
   document.getElementById("progress").innerHTML = "Let's get Started!";
 
@@ -102,40 +102,45 @@ function storeScores(score) {
     localStorage.setItem(high_Scores, JSON.stringify(highScores));
 
     var getScores = JSON.parse(localStorage.getItem("highScores"))
-    document.getElementById("hs-h2").innerHTML = "High Scores!";
+    //document.getElementById("hs-h2").innerHTML = "High Scores!";
     getScores.forEach((item, highscore) => {
 
     var p = document.createElement("p");
       p.textContent = `${item.userName}:${item.score}`;
+      document.getElementById("highScores").append(p);
 
     })
   }
 }
 
-
 function minusTime() {
-  debugger;
+  //debugger;
   if (timeleft > 0 ) {
     timeleft -= 10;
       if(timeleft <= 0) {
         document.getElementById("timer").innerHTML = "Minus 10s - No more time left!";
         stopQuiz(totalCorrect, totalIncorrect);
-
       }
   }
 }
 
 function stopQuiz(totalCorrect, totalIncorrect) {
   //debugger;
+
    if (totalCorrect === myQuestions.length) {
     stop_Quiz = true;
     makeQuiz("null", stop_Quiz);
     gameOver(totalCorrect, totalIncorrect);
     document.getElementById("progress").innerHTML = "";
    }
-   else {
+   else if (containerDisplay) {
+     stop_Quiz = true;
+     deleteContainers(index);
+     gameOver(totalCorrect, totalIncorrect);
+     document.getElementById("progress").innerHTML = "";
+    } 
+    else {
     stop_Quiz = true;
-    deleteContainers(index);
     gameOver(totalCorrect, totalIncorrect);
     document.getElementById("progress").innerHTML = "";
    }
@@ -259,6 +264,8 @@ async function selectedButton(clicked_id, clicked_txt) {
           document.getElementById("progress").innerHTML = "";
           document.getElementById("progress").innerHTML = "Question " + x + " of " + myQuestions.length;
           //console.log("index for makeQuiz: " + index);
+          containerDisplay = true;
+
     }
     
     function deleteContainers(index) {
@@ -266,6 +273,7 @@ async function selectedButton(clicked_id, clicked_txt) {
       deleteContainerQ.remove();
       var deleteContainerC = document.getElementById("div-choices" + index);
       deleteContainerC.remove();
+      containerDisplay = false;
     }
   
 
@@ -350,6 +358,7 @@ var myQuestions = [
   var myPromise;
   var timeleft;
   var stop_Quiz;
+  var  containerDisplay = false;
 
 //function to generate the first set of questions with answers on buttons
 //also deletes the start button so it can't be used throughout the quiz
