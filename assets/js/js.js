@@ -86,49 +86,23 @@ var storeScores = function(score) {
     highScores.splice(maxNumber);
     localStorage.setItem(high_Scores, JSON.stringify(highScores));
 
-    //var highScoreList = document.getElementById("highScores");
-    //highScoreList.innerHTML = "";
+    //var highScoreList = document.getElementById(highScores);
+    //highScoreList.innerHTML = highScores;
 
-    //localStorage.getItem(high_Scores);
+    localStorage.getItem(high_Scores);
     
      
+      /*
       for (var j = 0; j < localStorage.length; j++) {
       x = localStorage.highScores[j];
       document.getElementById("highscores").innerHTML += x + "<br>";
       }
+      */
      console.log(high_Scores);
-    //saveHighScore(score, highScores); // TODO
-    //showHighScores(highScores, high_Scores); // TODO
+
   }
 }
 
-/*
-function saveHighScore(score, highScores) {
-  const name = prompt('You got a highscore! Enter name:');
-  const newScore = {score, name};
-  
-  // 1. Add to list
-  highScores.push(newScore);
-
-  // 2. Sort the list
-  highScores.sort((a, b) => b.score - a.score);
-  
-  // 3. Select new list
-  highScores.splice(maxNumber);
-  
-  // 4. Save to local storage
-  localStorage.setItem(high_Scores, JSON.stringify(highScores));
-};
-
-function showHighScores(highScores, high_Scores) {
-  const highScores = JSON.parse(localStorage.getItem(high_Scores)) ?? [];
-  const highScoreList = document.getElementById(high_Scores);
-  
-  highScoreList.innerHTML = highScores
-    .map((score) => `<li>${score.score} - ${score.name}`)
-    .join('');
-}
-*/
 
 var gameOver = function(totalCorrect, totalIncorrect){
     //fn to ask for user initials and save score
