@@ -17,7 +17,7 @@ async function sleep(timer) {
 //Add timer for total game (with deduction for incorrect answers)
 var gameTimer = function() {
   //debugger;
-  timeleft = 10;
+  timeleft = 75;
   document.getElementById("timer").innerHTML = "";
   var mainTimer = setInterval(async function() {
     //debugger;
@@ -32,22 +32,20 @@ var gameTimer = function() {
       clearInterval(mainTimer);
       document.getElementById("timer").innerHTML = "";
       document.getElementById("timer").innerHTML = "All Done!";
-      await sleep(4000);
-      document.getElementById("timer").innerHTML = "";
+      //await sleep(mainTime);
+      //document.getElementById("timer").innerHTML = "";
           
-    } else if (timeleft === 0) {
+    } else if (timeleft <= 0) {
       //timer ran out
       clearInterval(mainTimer);
       document.getElementById("timer").innerHTML = "No more time left!";
       stopQuiz(index);
+      //await sleep(mainTime);
+      //document.getElementById("timer").innerHTML = "";
+      }
 
-      await sleep(4000);
-      document.getElementById("timer").innerHTML = "";
-      //return timeleft;
-    }
-}, 1000);
+  }, 1000);
 }
-
 
 var resetStart = function() {
 
@@ -57,13 +55,91 @@ var resetStart = function() {
   addStartBttn.setAttribute("type", "button");
   addStartBttn.setAttribute("id", "start");
   addStartBttn.setAttribute("onclick", "startQuiz(), gameTimer()");
-  var startBttnTxt = document.createTextNode("Start");
+  var startBttnTxt = document.createTextNode("Start!");
   textAppend = addStartBttn.appendChild(startBttnTxt);
   startContainer.appendChild(addStartBttn);
   
   //resets footer
   document.getElementById("progress").innerHTML = "";
   document.getElementById("progress").innerHTML = "Let's get Started!";
+  //reset result header
+  document.getElementById("timer").innerHTML = "";
+
+}
+
+var storeScores = function(score) {
+  debugger;
+  var maxNumber = 2;
+  var high_Scores = "highScores";
+
+  var highScores = JSON.parse(localStorage.getItem(high_Scores)) ?? [];
+  var lowestScore = highScores[maxNumber - 1]?.score ?? 0;
+  
+  if (score > lowestScore) {
+    var userName = prompt("You got a high score!\r\nPlease enter your name to be added to the top scores list! ");
+    var newScore = {score, userName};
+
+    highScores.push(newScore);
+    //highScores.sort((a, b) => {b.score - a.score});
+    highScores.sort(function(a, b){return b.score - a.score});
+    console.log(highScores);
+    highScores.splice(maxNumber);
+    localStorage.setItem(high_Scores, JSON.stringify(highScores));
+
+    //var highScoreList = document.getElementById("highScores");
+    //highScoreList.innerHTML = "";
+
+    //localStorage.getItem(high_Scores);
+    
+     
+      for (var j = 0; j < localStorage.length; j++) {
+      x = localStorage.highScores[j];
+      document.getElementById("highscores").innerHTML += x + "<br>";
+      }
+     console.log(high_Scores);
+    //saveHighScore(score, highScores); // TODO
+    //showHighScores(highScores, high_Scores); // TODO
+  }
+}
+
+/*
+function saveHighScore(score, highScores) {
+  const name = prompt('You got a highscore! Enter name:');
+  const newScore = {score, name};
+  
+  // 1. Add to list
+  highScores.push(newScore);
+
+  // 2. Sort the list
+  highScores.sort((a, b) => b.score - a.score);
+  
+  // 3. Select new list
+  highScores.splice(maxNumber);
+  
+  // 4. Save to local storage
+  localStorage.setItem(high_Scores, JSON.stringify(highScores));
+};
+
+function showHighScores(highScores, high_Scores) {
+  const highScores = JSON.parse(localStorage.getItem(high_Scores)) ?? [];
+  const highScoreList = document.getElementById(high_Scores);
+  
+  highScoreList.innerHTML = highScores
+    .map((score) => `<li>${score.score} - ${score.name}`)
+    .join('');
+}
+*/
+
+var gameOver = function(totalCorrect, totalIncorrect){
+    //fn to ask for user initials and save score
+    totalScore = Math.round((totalCorrect/myQuestions.length) * 100);
+    document.getElementById("results").innerHTML = "Result: " + totalCorrect + "/" + myQuestions.length + "<br><br>" + totalScore + " %";
+    //Add fn for player input
+  
+    storeScores(totalScore);
+
+    totalCorrect = 0;
+    totalIncorrect = 0;
 
 }
 
@@ -78,18 +154,14 @@ var displaySelectionResult = async function(display) {
       totalCorrect++;
     }
     else if (display == 2) {
-      document.getElementById("results").innerHTML = "Nope!";
+      document.getElementById("results").innerHTML = "Nope! -10 seconds";
       totalIncorrect++;
     }
   }
 else {
-  //fn to ask for user initials and save score
-  totalScore = Math.round((totalCorrect/myQuestions.length) * 100);
-  document.getElementById("results").innerHTML = "Result: " + totalCorrect + "/" + myQuestions.length + "<br><br>" + totalScore + " %";
-  //Add fn for player input
 
-  totalCorrect = 0;
-  totalIncorrect = 0;
+  gameOver(totalCorrect, totalIncorrect);
+
 }
 }
 
@@ -100,14 +172,12 @@ var selectedButton = async function(clicked_id, clicked_txt) {
   //debugger;
   if (index < myQuestions.length) {
       
-      //console.log("index for selected button main if: " + index);
-
       if (clicked_id === myQuestions[index].correctAnswer) {
           //correct answer
           display = 1;
           displaySelectionResult(display);
           deleteContainers(index);
-          //wait two seconds to show the next set of questions
+          //wait timer to show the next set of questions
           await sleep(timer);
           document.getElementById("results").innerHTML = "";
           index++;
@@ -118,8 +188,9 @@ var selectedButton = async function(clicked_id, clicked_txt) {
           display = 2;
           displaySelectionResult(display);
           deleteContainers(index);
-          //wait two seconds to show the next set of questions
+          //wait timer to show the next set of questions
           await sleep(timer);
+          minusTime(true);
           document.getElementById("results").innerHTML = "";
           index++;
       } 
@@ -127,6 +198,11 @@ var selectedButton = async function(clicked_id, clicked_txt) {
   makeQuiz(index);
 }
 
+  var minusTime = function(wrong) {
+
+    timeleft -= 10;
+
+  }
 
  var stopQuiz = function(i) {
    debugger;
@@ -153,8 +229,6 @@ var selectedButton = async function(clicked_id, clicked_txt) {
     await sleep(mainTime);
     document.getElementById("results").innerHTML = "";
 
-    //enter your initials for High Score
-    
     //adds the start button
     resetStart();
   }
@@ -276,11 +350,10 @@ var myQuestions = [
   var display;
   var totalCorrect;
   var totalIncorrect;
-  var timer = 500;
+  var timer = 1000;
   var totalScore;
   var timerComplete;
-  var mainTime = 1000;
-  var time = 500;
+  var mainTime = 5000;
   var myPromise;
   var timeleft;
   var stop;
