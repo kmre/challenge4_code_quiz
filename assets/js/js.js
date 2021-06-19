@@ -15,7 +15,7 @@ async function sleep(timer) {
 }
 
 //Add timer for total game (with deduction for incorrect answers)
-var gameTimer = function() {
+function gameTimer() {
   //debugger;
   timeleft = 15;
   document.getElementById("timer").innerHTML = "";
@@ -32,22 +32,22 @@ var gameTimer = function() {
       clearInterval(mainTimer);
       document.getElementById("timer").innerHTML = "";
       document.getElementById("timer").innerHTML = "All Done!";
+      stopQuiz(totalCorrect, totalIncorrect);
       //await sleep(mainTime);
       //document.getElementById("timer").innerHTML = "";
           
-    } else if (timeleft <= 0) {
-      //timer ran out
-      clearInterval(mainTimer);
-      document.getElementById("timer").innerHTML = "No more time left!";
-      stopQuiz(index);
-      //await sleep(mainTime);
-      //document.getElementById("timer").innerHTML = "";
-      }
+    }   else if (timeleft <= 0) {
+          //timer ran out
+          clearInterval(mainTimer);
+          stopQuiz(totalCorrect, totalIncorrect);
+          await sleep(mainTime);
+          document.getElementById("timer").innerHTML = "";
+        }
 
   }, 1000);
 }
 
-var resetStart = function() {
+function resetStart() {
 
   //if they click on the start button again it will re-start the quiz
   var startContainer = document.getElementById("welcome");
@@ -64,11 +64,13 @@ var resetStart = function() {
   document.getElementById("progress").innerHTML = "Let's get Started!";
   //reset result header
   document.getElementById("timer").innerHTML = "";
+  document.getElementById("results").innerHTML = "";
+
 
 }
 
-var storeScores = function(score) {
-  debugger;
+function storeScores(score) {
+  //debugger;
   //max number of entries for HS
   var maxNumber = 2;
   //key
@@ -96,56 +98,46 @@ var storeScores = function(score) {
     //stores information as string
     localStorage.setItem(high_Scores, JSON.stringify(highScores));
 
-    //var highScoreList = document.getElementById(highScores);
-    //highScoreList.innerHTML = highScores;
- 
-     var retrieveHighScore = localStorage.getItem(high_Scores);
-     var highScoresArray = JSON.parse(retrieveHighScore);
-     var highScoresDisplay = [];
-
-      console.log(retrieveHighScore);
-
-
-      //var highScoresDisplay = Object.values(retrieveHighScore)
-      
-      //for (let y = 0; y < highScoresArray.length; y++) {
-      //  highScoresDisplay = array[y];
-     // }
-      
-     // highScoresArray.forEach(highScores => {
-        
-      //  highScoresDisplay = [highScores.userName, highScores.score];
-        
-     // });
-
-      console.log(highScoresDisplay);
-
-      document.getElementById("hs-h2").innerHTML = "HIGH SCORES!";
-      document.getElementById("highScores2").innerHTML = `${highScores.user}:${highScores.score}`
-    
-      /*
-      for (var j = 0; j < localStorage.length; j++) {
-      x = localStorage.highScores[j];
-      document.getElementById("highscores").innerHTML += x + "<br>";
-      }
-      */
-     console.log(high_Scores);
 
   }
 }
 
 
-var gameOver = function(totalCorrect, totalIncorrect){
+function minusTime() {
+  if (timeleft > 0 ) {
+    timeleft -= 10;
+      if(timeleft <= 0) {
+        document.getElementById("timer").innerHTML = "No more time left!";
+        stopQuiz(totalCorrect, totalIncorrect);
+
+      }
+  }
+}
+function stopQuiz(totalCorrect, totalIncorrect) {
+  //debugger;
+   if (totalCorrect === myQuestions.length) {
+    stop_Quiz = true;
+    makeQuiz("null", stop_Quiz);
+    gameOver(totalCorrect, totalIncorrect);
+   }
+   else {
+    stop_Quiz = true;
+    deleteContainers(index);
+    gameOver(totalCorrect, totalIncorrect);
+   }
+}
+
+async function gameOver(totalCorrect, totalIncorrect) {
     //fn to ask for user initials and save score
     totalScore = Math.round((totalCorrect/myQuestions.length) * 100);
     document.getElementById("results").innerHTML = "Result: " + totalCorrect + "/" + myQuestions.length + "<br><br>" + totalScore + " %";
     //Add fn for player input
-  
+    await sleep(timer); 
     storeScores(totalScore);
 
     totalCorrect = 0;
     totalIncorrect = 0;
-
+    resetStart();
 }
 
 //Display if selected answer is correct or incorrect and display progress
@@ -163,17 +155,17 @@ var displaySelectionResult = async function(display) {
       totalIncorrect++;
     }
     else {
-      gameOver(totalCorrect, totalIncorrect);
+      stopQuiz(totalCorrect, totalIncorrect);
     }
   }
 else {
-  gameOver(totalCorrect, totalIncorrect);
+  stopQuiz(totalCorrect, totalIncorrect);
 }
 }
 
 //selected button passes the information to the fn and it checks if it's correct or not
 //also deleted the previous questions so the next set can be displayed
-var selectedButton = async function(clicked_id, clicked_txt) { 
+async function selectedButton(clicked_id, clicked_txt) { 
   //debugger;
   if (index < myQuestions.length) {
 
@@ -192,97 +184,76 @@ var selectedButton = async function(clicked_id, clicked_txt) {
           display = 2;
           displaySelectionResult(display);
           minusTime();
+          if (!stop_Quiz) {
           deleteContainers(index);
           //wait timer to show the next set of questions
           await sleep(timer);
           document.getElementById("results").innerHTML = "";
           index++;
+          }
+
       } 
   }
-  makeQuiz(index);
+  makeQuiz(index, stop_Quiz);
 }
-
-  var minusTime = function(wrong) {
-    timeleft -= 10;
-    if (timeleft <= 0 ) {
-      stopQuiz(index);
-      clearInterval(mainTimer);
-      document.getElementById("timer").innerHTML = "No more time left!";
-    }
-  }
-
- var stopQuiz = function(i) {
-   debugger;
-    stop = true;
-    deleteContainers(i);
-    makeQuiz("null", stop);
- }
 
 //makes the quiz adds containers for questions/answers depending on the index
 //function makeQuiz (i) {
-  var makeQuiz = async function(i, stop) {
-  if ((i < myQuestions.length) && (!stop)) {
-    
-    makeContainers(i);
-      
-  }
-  else if ((i === myQuestions.length) || (stop)) {
-    //after last question is answered go through this and re-create the start button
-    document.getElementById("progress").innerHTML = "";
-    display = 0;
-    displaySelectionResult(display);
-    //wait two seconds to add the start button
-    await sleep(mainTime);
-    document.getElementById("results").innerHTML = "";
-    
-    //adds the start button
-    resetStart();
-  }
-}
-
-var makeContainers = function(i) {
-//Question container
-      //debugger;
-      var container = document.getElementById("question");
-
-      var questionContainerCreate = document.createElement("div");
-      questionContainerCreate.setAttribute("id", "div-question" + i);
-      container.appendChild(questionContainerCreate);
-      var currentQuestion = myQuestions[i].question;
-      questionContainerCreate.innerHTML = currentQuestion; 
-
-      //Choices container
-      //var container2 = document.getElementById("div-question" + i); 
-      //append container to id = question instead
-      var choicesContainerCreate = document.createElement("div");
-      choicesContainer = choicesContainerCreate.setAttribute("id", "div-choices" + i);
-      container.appendChild(choicesContainerCreate);
-
-      var container3 = document.getElementById("div-choices" + i); 
-      
-      //create the buttons for the answers
-      for (letter in myQuestions[i].answers) {
-      var btnCreate = document.createElement("BUTTON");
-      btnCreate.setAttribute("id", letter);
-      btnCreate.setAttribute("class", i);
-      btnCreate.setAttribute("onClick", "selectedButton(this.id, this.innerHTML)");
-      var btnText = document.createTextNode(myQuestions[i].answers[letter]);
-      textAppend = btnCreate.appendChild(btnText);
-      container3.appendChild(btnCreate);  
-      }
-      var x = i + 1;
+  async function makeQuiz (i, stop) {
+    //debugger;
+    if ((i < myQuestions.length) && (!stop)) {
+      makeContainers(i);
+    }
+    else if (i === myQuestions.length) {
+      //after last question is answered go through this and re-create the start button
       document.getElementById("progress").innerHTML = "";
-      document.getElementById("progress").innerHTML = "Question " + x + " of " + myQuestions.length;
-      //console.log("index for makeQuiz: " + index);
+     
+    }
+  }
 
-}
-
-var deleteContainers = function(index) {
-  var deleteContainerQ = document.getElementById("div-question" + index);
-  deleteContainerQ.remove();
-  var deleteContainerC = document.getElementById("div-choices" + index);
-  deleteContainerC.remove();
-}
+  function makeContainers(i) {
+    //Question container
+          //debugger;
+          var container = document.getElementById("question");
+    
+          var questionContainerCreate = document.createElement("div");
+          questionContainerCreate.setAttribute("id", "div-question" + i);
+          container.appendChild(questionContainerCreate);
+          var currentQuestion = myQuestions[i].question;
+          questionContainerCreate.innerHTML = currentQuestion; 
+    
+          //Choices container
+          //var container2 = document.getElementById("div-question" + i); 
+          //append container to id = question instead
+          var choicesContainerCreate = document.createElement("div");
+          choicesContainer = choicesContainerCreate.setAttribute("id", "div-choices" + i);
+          container.appendChild(choicesContainerCreate);
+    
+          var container3 = document.getElementById("div-choices" + i); 
+          
+          //create the buttons for the answers
+          for (letter in myQuestions[i].answers) {
+          var btnCreate = document.createElement("BUTTON");
+          btnCreate.setAttribute("id", letter);
+          btnCreate.setAttribute("class", i);
+          btnCreate.setAttribute("onClick", "selectedButton(this.id, this.innerHTML)");
+          var btnText = document.createTextNode(myQuestions[i].answers[letter]);
+          textAppend = btnCreate.appendChild(btnText);
+          container3.appendChild(btnCreate);  
+          }
+          var x = i + 1;
+          document.getElementById("progress").innerHTML = "";
+          document.getElementById("progress").innerHTML = "Question " + x + " of " + myQuestions.length;
+          //console.log("index for makeQuiz: " + index);
+    }
+    
+    function deleteContainers(index) {
+      var deleteContainerQ = document.getElementById("div-question" + index);
+      deleteContainerQ.remove();
+      var deleteContainerC = document.getElementById("div-choices" + index);
+      deleteContainerC.remove();
+    }
+  
 
 //object for questions and answers
 var myQuestions = [
@@ -314,6 +285,7 @@ var myQuestions = [
     },
     correctAnswer: "d"
   },
+  /*
   {
       question: "What HTML element is used to define important text",
       answers: {
@@ -349,6 +321,7 @@ var myQuestions = [
       },
       correctAnswer: "a"
   }
+  */
 ];
 
 //variables
@@ -362,14 +335,14 @@ var myQuestions = [
   var mainTime = 5000;
   var myPromise;
   var timeleft;
-  var stop;
-  var cancelSelected;
+  var stop_Quiz;
+ 
 
 
 
 //function to generate the first set of questions with answers on buttons
 //also deletes the start button so it can't be used throughout the quiz
-var startQuiz = function() {
+ function startQuiz() {
  // debugger;
 //set all variables to 0 before starting
   index = 0;
@@ -377,6 +350,8 @@ var startQuiz = function() {
   totalCorrect = 0;
   totalIncorrect = 0;
   totalScore = 0;
+  stop_Quiz = false;
+
 
   //delete start button
   var deleteStartBttn = document.getElementById("start");
