@@ -13,7 +13,7 @@ The application must create a randomly generated password that meets certein cri
         - Answers are presented as multiple choice that can be clicked on.
     - After the answer has been selected the next question and set of answers appears.
     - When a question is answered incorrectly time is subtracted from the clock and an indication is given that it was the incorrect answer.
-    - All quetions need to be answer or the timer reaches 0. 
+    - All questions need to be answer or the timer reaches 0. 
         - Then the quiz is over.
     - When the quiz is over user can save initials and score.
     - When hovering over buttons they highlight.
