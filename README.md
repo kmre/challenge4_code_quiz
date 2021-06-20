@@ -4,7 +4,7 @@ Web APIs Challenge: Code Quiz
 Create a timed quiz on JavaScript fundamentals that stores high scores so that progress can be compared against peers.
 
 Objective: 
-The application must create a randomly generated password that meets certein criteria: 
+The application must create a randomly generated password that meets certain criteria: 
 
  Must have:
 
