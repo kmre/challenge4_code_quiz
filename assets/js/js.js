@@ -109,23 +109,22 @@ function storeScores(score) {
     let getScores = JSON.parse(localStorage.getItem("highScores"))
     //document.getElementById("hs-h2").innerHTML = "High Scores!";
 
+
     getScores.forEach((item) => {
-      containerScores = document.getElementById("results");
-      var scoresContainerCreate = document.createElement("p");
-      scoresContainerCreate.setAttribute("id", "highScores3");
-      containerScores.appendChild(scoresContainerCreate);
-      var scoreTxt = `${item.score}:${item.userName}`;
-      scoresContainerCreate.innerHTML = scoreTxt; 
-    })
-    var btnCreate = document.createElement("BUTTON");
-    btnCreate.setAttribute("id", "resetGame");
-    //btnCreate.setAttribute("class", "resetGame");
-    btnCreate.setAttribute("onClick", "resetStart()");
-    var btnText = document.createTextNode("Restart?");
-    textAppend = btnCreate.appendChild(btnText);
-    containerScores.appendChild(btnCreate); 
-  }
- 
+          containerScores = document.getElementById("results");
+          var scoresContainerCreate = document.createElement("h2");
+          scoresContainerCreate.setAttribute("id", "highScores");
+          containerScores.appendChild(scoresContainerCreate);
+          var scoreTxt = "User Name: " + `${item.userName}` + "</br>" + "Score: " + `${item.score}`;
+          scoresContainerCreate.innerHTML = scoreTxt; 
+        })
+        var btnCreate = document.createElement("BUTTON");
+        btnCreate.setAttribute("id", "resetGame");
+        btnCreate.setAttribute("onClick", "resetStart()");
+        var btnText = document.createTextNode("Restart?");
+        textAppend = btnCreate.appendChild(btnText);
+        containerScores.appendChild(btnCreate); 
+      }
 }
 
 function minusTime() {
