@@ -36,9 +36,10 @@ function gameTimer() {
       //await sleep(mainTime);
       //document.getElementById("timer").innerHTML = "";
           
-    }   else if (timeleft <= 0) {
+    }   
+        else if (timeleft <= 0) {
           //timer ran out
-          debugger;
+          //debugger;
           clearInterval(mainTimer);
           document.getElementById("timer").innerHTML = "No more time Left!";
           if (!stop_Quiz) {
@@ -57,6 +58,9 @@ function resetStart() {
   document.getElementById("results").innerHTML = "";
   //resets footer
   document.getElementById("progress").innerHTML = "";
+
+  totalCorrect = 0;
+  totalIncorrect = 0;
 
   //if they click on the start button again it will re-start the quiz
   var startContainer = document.getElementById("welcome");
@@ -100,17 +104,28 @@ function storeScores(score) {
     highScores.splice(maxNumber);
     //stores information as string
     localStorage.setItem(high_Scores, JSON.stringify(highScores));
-
-    var getScores = JSON.parse(localStorage.getItem("highScores"))
+    debugger;
+    
+    let getScores = JSON.parse(localStorage.getItem("highScores"))
     //document.getElementById("hs-h2").innerHTML = "High Scores!";
-    getScores.forEach((item, highscore) => {
 
-    var p = document.createElement("p");
-      p.textContent = `${item.userName}:${item.score}`;
-      document.getElementById("highScores").append(p);
-
+    getScores.forEach((item) => {
+      containerScores = document.getElementById("results");
+      var scoresContainerCreate = document.createElement("p");
+      scoresContainerCreate.setAttribute("id", "highScores3");
+      containerScores.appendChild(scoresContainerCreate);
+      var scoreTxt = `${item.score}:${item.userName}`;
+      scoresContainerCreate.innerHTML = scoreTxt; 
     })
+    var btnCreate = document.createElement("BUTTON");
+    btnCreate.setAttribute("id", "resetGame");
+    //btnCreate.setAttribute("class", "resetGame");
+    btnCreate.setAttribute("onClick", "resetStart()");
+    var btnText = document.createTextNode("Restart?");
+    textAppend = btnCreate.appendChild(btnText);
+    containerScores.appendChild(btnCreate); 
   }
+ 
 }
 
 function minusTime() {
@@ -118,7 +133,7 @@ function minusTime() {
   if (timeleft > 0 ) {
     timeleft -= 10;
       if(timeleft <= 0) {
-        document.getElementById("timer").innerHTML = "Minus 10s - No more time left!";
+        document.getElementById("timer").innerHTML = "No more time left!";
         stopQuiz(totalCorrect, totalIncorrect);
       }
   }
@@ -152,11 +167,10 @@ async function gameOver(totalCorrect, totalIncorrect) {
     document.getElementById("results").innerHTML = "Result: " + totalCorrect + "/" + myQuestions.length + "<br><br>" + totalScore + " %";
     //Add fn for player input
     await sleep(timer); 
+
     storeScores(totalScore);
 
-    totalCorrect = 0;
-    totalIncorrect = 0;
-    resetStart();
+
 }
 
 //Display if selected answer is correct or incorrect and display progress
@@ -358,7 +372,8 @@ var myQuestions = [
   var myPromise;
   var timeleft;
   var stop_Quiz;
-  var  containerDisplay = false;
+  var containerDisplay = false;
+  var containerScores;
 
 //function to generate the first set of questions with answers on buttons
 //also deletes the start button so it can't be used throughout the quiz
