@@ -91,7 +91,7 @@ function resetStart() {
 async function storeScores(score) {
   //debugger;
   //max number of entries for HS
-  var maxNumber = 2;
+  var maxNumber = 10;
   //key
   var high_Scores = "highScores";
   //Get stored information and parse it if nothing create empty array
