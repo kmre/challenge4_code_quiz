@@ -126,7 +126,7 @@ async function storeScores(score) {
           var scoresContainerCreate = document.createElement("h2");
           scoresContainerCreate.setAttribute("id", "highScores");
           containerScores.appendChild(scoresContainerCreate);
-          var scoreTxt = "User Name: " + `${item.userName}` + "</br>" + "Score: " + `${item.score}`;
+          var scoreTxt = "User Name: " + `${item.userName}` + "</br>" + "Score: " + `${item.score}` + " %";
           scoresContainerCreate.innerHTML = scoreTxt; 
         })
         resetGame(); 
@@ -169,7 +169,7 @@ function getHS() {
         var scoresContainerCreate = document.createElement("h2");
         scoresContainerCreate.setAttribute("id", "h2-id");
         containerScores2.appendChild(scoresContainerCreate);
-        var scoreTxt = "User Name: " + `${item.userName}` + "</br>" + "Score: " + `${item.score}`;
+        var scoreTxt = "User Name: " + `${item.userName}` + "</br>" + "Score: " + `${item.score}` + " %";
         scoresContainerCreate.innerHTML = scoreTxt; 
       })
   }
